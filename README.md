@@ -21,7 +21,7 @@ Ketika API harus menunggu database menyelesaikan prosesnya, waktu respon akan me
 
 Prototype ini dibuat untuk mengukur performa sistem sebelum dilakukan optimasi seperti caching atau asynchronous processing.
 
-# System Overview
+### System Overview
 
 Baseline system terdiri dari beberapa komponen utama:
 
