@@ -117,18 +117,17 @@ Baseline ini digunakan sebagai **acuan sebelum implementasi optimasi sistem**.
 
 ## How to Run
 
-1. Start database container
+###1. Start database container
 
-docker compose up -d
+   docker compose up -d
 
-2. Run API server
+###2. Run API server
 
-go run cmd/main.go
+  go run cmd/main.go
 
+###3. Server berjalan di
 
-3. Server berjalan di
-
-http://localhost:8080
+  http://localhost:8080
 
 ## Run Load Testing
 
