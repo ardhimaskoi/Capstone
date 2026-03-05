@@ -123,11 +123,11 @@ Baseline ini digunakan sebagai **acuan sebelum implementasi optimasi sistem**.
 
 2. Run API server
 
-  go run cmd/main.go
+   go run cmd/main.go
 
 3. Server berjalan di
 
-  http://localhost:8080
+   http://localhost:8080
 
 ## Run Load Testing
 
