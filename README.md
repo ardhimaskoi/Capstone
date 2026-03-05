@@ -21,7 +21,7 @@ Ketika API harus menunggu database menyelesaikan prosesnya, waktu respon akan me
 
 Prototype ini dibuat untuk mengukur performa sistem sebelum dilakukan optimasi seperti caching atau asynchronous processing.
 
-### System Overview
+## System Overview
 
 Baseline system terdiri dari beberapa komponen utama:
 
@@ -34,8 +34,7 @@ Digunakan untuk menyimpan data merchant dan transaksi.
 Load Testing Tool  
 k6 digunakan untuk melakukan pengujian performa sistem dengan berbagai skenario virtual users.
 
-
-# Technology Stack
+## Technology Stack
 
 Backend  
 Go (Golang)
@@ -50,9 +49,9 @@ Containerization
 Docker
 
 
-# API Endpoints
+## API Endpoints
 
-# Inquiry QRIS
+### Inquiry QRIS
 
 Digunakan untuk mengecek merchant yang tersedia.
 
@@ -60,12 +59,11 @@ GET /qris/inquiry
 
 Endpoint ini mengambil data merchant dari database.
 
-# Payment QRIS
+### Payment QRIS
 
 Mensimulasikan proses pembayaran QRIS.
 
 POST /qris/payment
-
 
 Pada baseline system, proses ini dilakukan secara synchronous:
 
@@ -74,7 +72,7 @@ Client → API → Database Insert → Response
 API harus menunggu database selesai melakukan insert sebelum mengirim response ke client.
 
 
-# Load Testing
+## Load Testing
 
 Pengujian performa dilakukan menggunakan k6 untuk mensimulasikan beban transaksi pada endpoint payment.  
 Setiap pengujian dijalankan selama 10 detik dengan jumlah virtual users yang berbeda untuk melihat dampak concurrency terhadap latency dan throughput sistem.
@@ -103,10 +101,10 @@ Average Latency
 Throughput  
 ~16,163 requests/sec
 
-# Catatan
+### Catatan
 Hasil load testing dapat sedikit berbeda tergantung spesifikasi perangkat dan kondisi sistem saat pengujian. Namun pola peningkatan latency seiring bertambahnya jumlah virtual users tetap konsisten.
 
-# Baseline Characteristics
+## Baseline Characteristics
 
 Pada baseline implementation:
 
@@ -117,7 +115,7 @@ Pada baseline implementation:
 
 Baseline ini digunakan sebagai **acuan sebelum implementasi optimasi sistem**.
 
-### How to Run
+## How to Run
 
 1. Start database container
 
@@ -132,7 +130,7 @@ go run cmd/main.go
 
 http://localhost:8080
 
-# Run Load Testing
+## Run Load Testing
 
 Jalankan load test menggunakan k6
 
