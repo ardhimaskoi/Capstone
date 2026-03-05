@@ -6,7 +6,7 @@ Project ini digunakan untuk mengidentifikasi bottleneck pada sistem transaksi re
 
 Versi repository ini merupakan baseline implementation (synchronous processing) sebelum dilakukan optimasi lebih lanjut.
 
-# Background
+## Background
 
 Transaksi QRIS dan sistem pembayaran real-time membutuhkan waktu respon yang cepat dan stabil.
 
