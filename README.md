@@ -117,20 +117,6 @@ Pada baseline implementation:
 
 Baseline ini digunakan sebagai **acuan sebelum implementasi optimasi sistem**.
 
-# Project Structure
-
-qris-optimizer
-│
-├── cmd
-│ └── main.go
-│
-├── k6
-│ └── payment_test.js
-│
-├── docker-compose.yml
-│
-└── go.mod
-
 # How to Run
 
 1. Start database container
@@ -145,7 +131,6 @@ go run cmd/main.go
 3. Server berjalan di
 
 http://localhost:8080
-
 
 # Run Load Testing
 
