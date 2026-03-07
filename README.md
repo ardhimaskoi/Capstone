@@ -33,7 +33,7 @@ Pendekatan ini memisahkan proses **read-heavy** dan **write-heavy** sehingga sis
 
 # Optimization Stages
 
-## Baseline System (Day 1–6)
+## Baseline System 
 
 Sistem awal menggunakan arsitektur synchronous dimana setiap request langsung menunggu proses database.
 
