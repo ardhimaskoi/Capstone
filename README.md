@@ -59,7 +59,7 @@ Bottleneck utama ditemukan pada operasi **database write dan query database lang
 
 ---
 
-# Async Processing Optimization (Day 7)
+# Async Processing Optimization 
 
 Untuk mengatasi bottleneck write-heavy, sistem diubah menggunakan **RabbitMQ asynchronous processing**.
 
@@ -81,7 +81,7 @@ Throughput ~84,000 req/sec
 
 ---
 
-# Redis Caching Optimization (Day 8)
+# Redis Caching Optimization =
 
 Endpoint inquiry yang bersifat **read-heavy** dioptimalkan menggunakan Redis caching.
 
@@ -100,8 +100,7 @@ Artinya lebih dari **99.9% request berhasil dilayani dari cache**, sehingga quer
 
 ---
 
-# System Monitoring and Bottleneck Analysis (Day 9–10)
-
+# System Monitoring and Bottleneck Analysis 
 Monitoring dilakukan pada tiga komponen utama:
 
 ### RabbitMQ
