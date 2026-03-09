@@ -7,9 +7,7 @@ export const options = {
 };
 
 export default function () {
-  const res = http.post(
-    "http://localhost:8080/qris/payment?merchant_id=1&amount=10000",
-  );
+  const res = http.get("http://localhost:8080/qris/inquiry?merchant_id=1");
 
   check(res, {
     "status is 200": (r) => r.status === 200,
