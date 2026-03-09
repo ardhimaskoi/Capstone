@@ -2,136 +2,207 @@
 
 Prototype backend system untuk mensimulasikan transaksi QRIS real-time dan menganalisis performa sistem sebelum dilakukan optimasi.
 
-Project ini digunakan untuk mengidentifikasi bottleneck pada sistem transaksi real-time yang terintegrasi dengan database dan melakukan pengujian performa menggunakan load testing.
+Project ini digunakan untuk mengidentifikasi bottleneck pada sistem transaksi real-time yang terintegrasi dengan sistem legacy dan database, serta melakukan pengujian performa menggunakan load testing.
 
-Versi repository ini merupakan baseline implementation (synchronous processing) sebelum dilakukan optimasi lebih lanjut.
+Versi repository ini merupakan **baseline implementation (synchronous processing)** sebelum dilakukan optimasi seperti caching dan asynchronous processing.
 
-## Background
+---
+
+# Background
 
 Transaksi QRIS dan sistem pembayaran real-time membutuhkan waktu respon yang cepat dan stabil.
 
 Namun pada implementasi nyata, latency sering meningkat karena beberapa faktor seperti:
 
-- integrasi dengan sistem legacy
-- query database yang tidak optimal
-- beban transaksi tinggi (peak load)
-- proses yang berjalan secara synchronous
+* integrasi dengan **sistem legacy**
+* query database yang tidak optimal
+* **beban transaksi tinggi (peak load)**
+* proses yang berjalan secara **synchronous**
 
-Ketika API harus menunggu database menyelesaikan prosesnya, waktu respon akan meningkat saat jumlah transaksi bertambah.
+Ketika API harus menunggu proses pada sistem legacy dan database selesai, waktu respon akan meningkat saat jumlah transaksi bertambah.
 
-Prototype ini dibuat untuk mengukur performa sistem sebelum dilakukan optimasi seperti caching atau asynchronous processing.
+Prototype ini dibuat untuk **mengukur performa sistem sebelum dilakukan optimasi** seperti caching atau asynchronous processing.
 
-## System Overview
+---
+
+# System Overview
 
 Baseline system terdiri dari beberapa komponen utama:
 
-API Service  
+### API Service
+
 Backend service yang mensimulasikan endpoint transaksi QRIS.
 
-PostgreSQL Database  
+### PostgreSQL Database
+
 Digunakan untuk menyimpan data merchant dan transaksi.
 
-Load Testing Tool  
+### Legacy System Simulation
+
+Untuk mensimulasikan integrasi dengan sistem lama, API menambahkan delay menggunakan:
+
+```
+time.Sleep(1 * time.Second)
+```
+
+Delay ini merepresentasikan waktu respon dari sistem legacy seperti core banking system.
+
+### Load Testing Tool
+
 k6 digunakan untuk melakukan pengujian performa sistem dengan berbagai skenario virtual users.
 
-## Technology Stack
+---
 
-Backend  
+# Technology Stack
+
+### Backend
+
 Go (Golang)
 
-Database  
+### Database
+
 PostgreSQL
 
-Load Testing  
+### Load Testing
+
 k6
 
-Containerization  
+### Containerization
+
 Docker
 
+---
 
-## API Endpoints
+# API Endpoints
 
-### Inquiry QRIS
+## Inquiry QRIS
 
-Digunakan untuk mengecek merchant yang tersedia.
+Digunakan untuk mengecek informasi merchant.
 
-GET /qris/inquiry
+```
+GET /qris/inquiry?merchant_id=1
+```
 
-Endpoint ini mengambil data merchant dari database.
+Flow:
 
-### Payment QRIS
+```
+Client → API → Legacy Delay → Database Query → Response
+```
+
+---
+
+## Payment QRIS
 
 Mensimulasikan proses pembayaran QRIS.
 
-POST /qris/payment
+```
+POST /qris/payment?merchant_id=1&amount=10000
+```
 
-Pada baseline system, proses ini dilakukan secara synchronous:
+Pada baseline system, proses dilakukan secara **synchronous**:
 
-Client → API → Database Insert → Response
+```
+Client → API → Legacy Delay → Database Insert → Response
+```
 
 API harus menunggu database selesai melakukan insert sebelum mengirim response ke client.
 
+---
 
-## Load Testing
+# Load Testing
 
-Pengujian performa dilakukan menggunakan k6 untuk mensimulasikan beban transaksi pada endpoint payment.  
-Setiap pengujian dijalankan selama 10 detik dengan jumlah virtual users yang berbeda untuk melihat dampak concurrency terhadap latency dan throughput sistem.
+Pengujian performa dilakukan menggunakan **k6** untuk mensimulasikan beban transaksi pada endpoint inquiry dan payment.
 
-1. 50 Virtual Users
+Setiap pengujian dijalankan selama **10 detik** dengan jumlah virtual users berbeda untuk melihat dampak concurrency terhadap latency dan throughput.
 
-Average Latency  
-~3.4 ms
+---
 
-Throughput  
-~14,481 requests/sec
+# Load Testing Results
 
-2. 100 Virtual Users
+## 100 Virtual Users
 
-Average Latency  
-~6.2 ms
+Average Latency
+~1.0 s
 
-Throughput  
-~15,864 requests/sec
+p95 Latency
+~1.02 s
 
-3. 150 Virtual Users
+Throughput
+~98 requests/sec
 
-Average Latency  
-~9.2 ms
+---
 
-Throughput  
-~16,163 requests/sec
+## 300 Virtual Users
 
-### Catatan
-Hasil load testing dapat sedikit berbeda tergantung spesifikasi perangkat dan kondisi sistem saat pengujian. Namun pola peningkatan latency seiring bertambahnya jumlah virtual users tetap konsisten.
+Average Latency
+~1.0 s
 
-## Baseline Characteristics
+p95 Latency
+~1.02 s
+
+Throughput
+~295 requests/sec
+
+---
+
+# Catatan
+
+Hasil load testing dapat sedikit berbeda tergantung spesifikasi perangkat dan kondisi sistem saat pengujian.
+
+Namun karena sistem menggunakan **legacy delay ~1 detik**, latency rata-rata akan berada di sekitar **1 detik per request**.
+
+---
+
+# Baseline Characteristics
 
 Pada baseline implementation:
 
-- API melakukan database insert secara langsung
-- proses bersifat synchronous
-- latency meningkat saat concurrency meningkat
-- database menjadi bottleneck utama saat load tinggi
+* API melakukan **database query dan insert secara langsung**
+* proses bersifat **synchronous**
+* terdapat **simulasi latency dari legacy system (~1s)**
+* throughput meningkat seiring bertambahnya virtual users
+* latency relatif konstan karena dipengaruhi oleh delay legacy
 
 Baseline ini digunakan sebagai **acuan sebelum implementasi optimasi sistem**.
 
-## How to Run
+---
 
-1. Start database container
+# How to Run
 
-   docker compose up -d
+## Start database container
 
-2. Run API server
+```
+docker compose up -d
+```
 
-   go run cmd/main.go
+## Run API server
 
-3. Server berjalan di
+```
+go run cmd/main.go
+```
 
-   http://localhost:8080
+Server berjalan di:
 
-## Run Load Testing
+```
+http://localhost:8080
+```
 
-Jalankan load test menggunakan k6
+---
 
+# Run Load Testing
+
+Jalankan load test menggunakan k6.
+
+Payment test:
+
+```
 k6 run k6/payment_test.js
+```
 
+Inquiry test:
+
+```
+k6 run k6/inquiry_test.js
+```
+
+---
